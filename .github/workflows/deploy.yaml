@@ -14,7 +14,7 @@ jobs:
       TF_VAR_account: ${{ secrets.SNOWFLAKE_ACCOUNT }}
       TF_VAR_username: ${{ secrets.SNOWFLAKE_USER }}
       TF_VAR_role: ${{ secrets.SNOWFLAKE_ROLE }}
-      TF_VAR_private_key_path: /home/runner/.ssh/rsa_key.p8
+      TF_VAR_private_key_path: ${{ secrets.SNOWFLAKE_PASSWORD }}
 
     steps:
 
@@ -26,10 +26,18 @@ jobs:
         with:
           terraform_version: 1.8.5
 
-      - name: Create RSA Key
+      - name: Write private key to file
         run: |
-          echo "${{ secrets.SNOWFLAKE_PRIVATE_KEY }}" > rsa_key.p8
-          chmod 600 rsa_key.p8
+          cat << 'EOF' > /tmp/rsa_key.p8
+          ${{ secrets.SNOWFLAKE_PASSWORD }}
+          EOF
+          chmod 600 /tmp/rsa_key.p8
+          echo "--- First line ---"
+          head -1 /tmp/rsa_key.p8
+          echo "--- Last line ---"
+          tail -1 /tmp/rsa_key.p8
+          echo "--- Line count ---"
+          wc -l /tmp/rsa_key.p8
 
       - name: Terraform Init DEV
         working-directory: environments/dev
@@ -56,7 +64,7 @@ jobs:
       TF_VAR_account: ${{ secrets.SNOWFLAKE_ACCOUNT }}
       TF_VAR_username: ${{ secrets.SNOWFLAKE_USER }}
       TF_VAR_role: ${{ secrets.SNOWFLAKE_ROLE }}
-      TF_VAR_private_key_path: /home/runner/.ssh/rsa_key.p8
+      TF_VAR_private_key_path: ${{ secrets.SNOWFLAKE_PRIVATE_KEY_PATH }}
 
     steps:
 
@@ -68,10 +76,18 @@ jobs:
         with:
           terraform_version: 1.8.5
 
-      - name: Create RSA Key
+      - name: Write private key to file
         run: |
-          echo "${{ secrets.SNOWFLAKE_PRIVATE_KEY }}" > rsa_key.p8
-          chmod 600 rsa_key.p8
+          cat << 'EOF' > /tmp/rsa_key.p8
+          ${{ secrets.SNOWFLAKE_PASSWORD }}
+          EOF
+          chmod 600 /tmp/rsa_key.p8
+          echo "--- First line ---"
+          head -1 /tmp/rsa_key.p8
+          echo "--- Last line ---"
+          tail -1 /tmp/rsa_key.p8
+          echo "--- Line count ---"
+          wc -l /tmp/rsa_key.p8
 
       - name: Terraform Init PROD
         working-directory: environments/prod
