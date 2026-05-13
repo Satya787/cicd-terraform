@@ -14,7 +14,7 @@ jobs:
       TF_VAR_account: ${{ secrets.SNOWFLAKE_ACCOUNT }}
       TF_VAR_username: ${{ secrets.SNOWFLAKE_USER }}
       TF_VAR_role: ${{ secrets.SNOWFLAKE_ROLE }}
-      TF_VAR_private_key_path: ../../rsa_key.p8
+      TF_VAR_private_key_path: /home/runner/.ssh/rsa_key.p8
 
     steps:
 
@@ -56,7 +56,7 @@ jobs:
       TF_VAR_account: ${{ secrets.SNOWFLAKE_ACCOUNT }}
       TF_VAR_username: ${{ secrets.SNOWFLAKE_USER }}
       TF_VAR_role: ${{ secrets.SNOWFLAKE_ROLE }}
-      TF_VAR_private_key_path: ../../rsa_key.p8
+      TF_VAR_private_key_path: /home/runner/.ssh/rsa_key.p8
 
     steps:
 
