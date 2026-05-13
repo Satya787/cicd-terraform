@@ -10,6 +10,12 @@ jobs:
   deploy-dev:
     runs-on: ubuntu-latest
 
+    env:
+      TF_VAR_account: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      TF_VAR_user: ${{ secrets.SNOWFLAKE_USER }}
+      TF_VAR_role: ${{ secrets.SNOWFLAKE_ROLE }}
+      TF_VAR_private_key_path: ../../rsa_key.p8
+
     steps:
 
       - name: Checkout Repo
@@ -17,6 +23,8 @@ jobs:
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.8.5
 
       - name: Create RSA Key
         run: |
@@ -25,30 +33,30 @@ jobs:
 
       - name: Terraform Init DEV
         working-directory: environments/dev
-        run: terraform init
+        run: terraform init -upgrade
+
+      - name: Terraform Validate DEV
+        working-directory: environments/dev
+        run: terraform validate
 
       - name: Terraform Plan DEV
         working-directory: environments/dev
         run: terraform plan
-        env:
-          TF_VAR_account: ${{ secrets.SNOWFLAKE_ACCOUNT }}
-          TF_VAR_user: ${{ secrets.SNOWFLAKE_USER }}
-          TF_VAR_role: ${{ secrets.SNOWFLAKE_ROLE }}
-          TF_VAR_private_key_path: ../../rsa_key.p8
 
       - name: Terraform Apply DEV
         working-directory: environments/dev
         run: terraform apply -auto-approve
-        env:
-          TF_VAR_account: ${{ secrets.SNOWFLAKE_ACCOUNT }}
-          TF_VAR_user: ${{ secrets.SNOWFLAKE_USER }}
-          TF_VAR_role: ${{ secrets.SNOWFLAKE_ROLE }}
-          TF_VAR_private_key_path: ../../rsa_key.p8
 
   deploy-prod:
     needs: deploy-dev
     runs-on: ubuntu-latest
     environment: production
+
+    env:
+      TF_VAR_account: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      TF_VAR_user: ${{ secrets.SNOWFLAKE_USER }}
+      TF_VAR_role: ${{ secrets.SNOWFLAKE_ROLE }}
+      TF_VAR_private_key_path: ../../rsa_key.p8
 
     steps:
 
@@ -57,6 +65,8 @@ jobs:
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.8.5
 
       - name: Create RSA Key
         run: |
@@ -65,13 +75,17 @@ jobs:
 
       - name: Terraform Init PROD
         working-directory: environments/prod
-        run: terraform init
+        run: terraform init -upgrade
+
+      - name: Terraform Validate PROD
+        working-directory: environments/prod
+        run: terraform validate
+
+      - name: Terraform Plan PROD
+        working-directory: environments/prod
+        run: terraform plan
 
       - name: Terraform Apply PROD
         working-directory: environments/prod
         run: terraform apply -auto-approve
-        env:
-          TF_VAR_account: ${{ secrets.SNOWFLAKE_ACCOUNT }}
-          TF_VAR_user: ${{ secrets.SNOWFLAKE_USER }}
-          TF_VAR_role: ${{ secrets.SNOWFLAKE_ROLE }}
-          TF_VAR_private_key_path: ../../rsa_key.p8
+        
