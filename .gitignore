@@ -1,13 +1,65 @@
+# =========================
+# Terraform
+# =========================
 
-
-# Local .terraform directories
+# Terraform working directory
 **/.terraform/*
 
-# .tfstate files
+# Terraform state files
 *.tfstate
 *.tfstate.*
 
+# Crash logs
+crash.log
+crash.*.log
+
+# Override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Terraform variable files containing secrets
 *.tfvars
 *.tfvars.json
 
-terraform.tfvars
+# Sensitive key files
+*.pem
+*.key
+*.p8
+
+# Terraform CLI config
+.terraformrc
+terraform.rc
+
+# Plan output files
+*.tfplan
+plan.out
+
+# =========================
+# Environment files
+# =========================
+.env
+.env.*
+
+# =========================
+# Python cache (if using scripts/dbt)
+# =========================
+__pycache__/
+*.pyc
+
+# =========================
+# VS Code
+# =========================
+.vscode/
+
+# =========================
+# macOS / Windows
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Logs
+# =========================
+*.log
