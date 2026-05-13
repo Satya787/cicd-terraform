@@ -12,7 +12,7 @@ jobs:
 
     env:
       TF_VAR_account: ${{ secrets.SNOWFLAKE_ACCOUNT }}
-      TF_VAR_user: ${{ secrets.SNOWFLAKE_USER }}
+      TF_VAR_username: ${{ secrets.SNOWFLAKE_USER }}
       TF_VAR_role: ${{ secrets.SNOWFLAKE_ROLE }}
       TF_VAR_private_key_path: ../../rsa_key.p8
 
@@ -54,7 +54,7 @@ jobs:
 
     env:
       TF_VAR_account: ${{ secrets.SNOWFLAKE_ACCOUNT }}
-      TF_VAR_user: ${{ secrets.SNOWFLAKE_USER }}
+      TF_VAR_username: ${{ secrets.SNOWFLAKE_USER }}
       TF_VAR_role: ${{ secrets.SNOWFLAKE_ROLE }}
       TF_VAR_private_key_path: ../../rsa_key.p8
 
