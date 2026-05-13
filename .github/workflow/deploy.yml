@@ -1,0 +1,77 @@
+name: Snowflake Terraform CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  deploy-dev:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Create RSA Key
+        run: |
+          echo "${{ secrets.SNOWFLAKE_PRIVATE_KEY }}" > rsa_key.p8
+          chmod 600 rsa_key.p8
+
+      - name: Terraform Init DEV
+        working-directory: environments/dev
+        run: terraform init
+
+      - name: Terraform Plan DEV
+        working-directory: environments/dev
+        run: terraform plan
+        env:
+          TF_VAR_account: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          TF_VAR_user: ${{ secrets.SNOWFLAKE_USER }}
+          TF_VAR_role: ${{ secrets.SNOWFLAKE_ROLE }}
+          TF_VAR_private_key_path: ../../rsa_key.p8
+
+      - name: Terraform Apply DEV
+        working-directory: environments/dev
+        run: terraform apply -auto-approve
+        env:
+          TF_VAR_account: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          TF_VAR_user: ${{ secrets.SNOWFLAKE_USER }}
+          TF_VAR_role: ${{ secrets.SNOWFLAKE_ROLE }}
+          TF_VAR_private_key_path: ../../rsa_key.p8
+
+  deploy-prod:
+    needs: deploy-dev
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Create RSA Key
+        run: |
+          echo "${{ secrets.SNOWFLAKE_PRIVATE_KEY }}" > rsa_key.p8
+          chmod 600 rsa_key.p8
+
+      - name: Terraform Init PROD
+        working-directory: environments/prod
+        run: terraform init
+
+      - name: Terraform Apply PROD
+        working-directory: environments/prod
+        run: terraform apply -auto-approve
+        env:
+          TF_VAR_account: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          TF_VAR_user: ${{ secrets.SNOWFLAKE_USER }}
+          TF_VAR_role: ${{ secrets.SNOWFLAKE_ROLE }}
+          TF_VAR_private_key_path: ../../rsa_key.p8
